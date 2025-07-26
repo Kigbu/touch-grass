@@ -4,7 +4,7 @@ import { SequenceConnect, createConfig } from '@0xsequence/connect';
 import { WagmiProvider, createConfig as createWagmiConfig, http } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { ReactNode } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 import SEQUENCE_CONFIG from '@/core/config/sequence';
 import { CURRENT_NETWORK } from '@/core/config/contracts';
 
@@ -57,6 +57,23 @@ interface Web3ProviderProps {
 }
 
 export default function Web3Provider({ children }: Web3ProviderProps) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>

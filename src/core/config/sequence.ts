@@ -3,7 +3,7 @@ export const SEQUENCE_CONFIG = {
   // Your actual keys from Sequence Builder
   projectAccessKey: process.env.NEXT_PUBLIC_SEQUENCE_PROJECT_ACCESS_KEY || "AQAAAAAAAKgsrLaufvWgc3Du3tclPeEFO44",
   waasConfigKey: process.env.NEXT_PUBLIC_SEQUENCE_WAAS_CONFIG_KEY || "eyJwcm9qZWN0SWQiOjQzMDUyLCJycGNTZXJ2ZXIiOiJodHRwczovL3dhYXMuc2VxdWVuY2UuYXBwIn0=",
-  walletConnectProjectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'your-walletconnect-project-id',
+  walletConnectProjectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'c4f79cc821944d9680842e34466bfbd9',
 
   // App configuration
   appName: "Touch Grass",

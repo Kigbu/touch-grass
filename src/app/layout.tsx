@@ -1,6 +1,7 @@
 import "./globals.css";
 import Web3Provider from "@/core/providers/Web3Provider";
 import NetworkWarning from "@/components/NetworkWarning";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 import "react-toastify/dist/ReactToastify.css";
 import "@rainbow-me/rainbowkit/styles.css";
@@ -30,25 +31,27 @@ export default function RootLayout({
           backgroundBlendMode: "overlay",
         }}
       >
-        <Web3Provider>
-          <PrimeReactProvider>
-            <NetworkWarning />
-            <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              hideProgressBar
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="light"
-            />
+        <ErrorBoundary>
+          <Web3Provider>
+            <PrimeReactProvider>
+              <NetworkWarning />
+              <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+              />
 
-            {children}
-          </PrimeReactProvider>
-        </Web3Provider>
+              {children}
+            </PrimeReactProvider>
+          </Web3Provider>
+        </ErrorBoundary>
       </body>
     </html>
   );
