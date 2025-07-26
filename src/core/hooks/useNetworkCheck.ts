@@ -43,7 +43,7 @@ export function useNetworkCheck() {
       }).then(() => {
         toast.success('Etherlink network added to your wallet!');
         setShowNetworkModal(false);
-      }).catch((error: any) => {
+      }).catch((error: unknown) => {
         console.error('Failed to add network:', error);
         toast.error('Failed to add network. Please add manually.');
       });

@@ -1,44 +1,34 @@
-// Sequence Wallet Configuration
+// Sequence Connect Configuration (from Sequence Builder)
 export const SEQUENCE_CONFIG = {
-  // Your app name and description
-  appName: 'Touch Grass',
-  appDescription: 'Web3 social app for organizing real-life meetups',
+  // Your actual keys from Sequence Builder
+  projectAccessKey: process.env.NEXT_PUBLIC_SEQUENCE_PROJECT_ACCESS_KEY || "AQAAAAAAAKgsrLaufvWgc3Du3tclPeEFO44",
+  waasConfigKey: process.env.NEXT_PUBLIC_SEQUENCE_WAAS_CONFIG_KEY || "eyJwcm9qZWN0SWQiOjQzMDUyLCJycGNTZXJ2ZXIiOiJodHRwczovL3dhYXMuc2VxdWVuY2UuYXBwIn0=",
+  walletConnectProjectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'your-walletconnect-project-id',
 
-  // Default network (Etherlink Testnet)
-  defaultNetwork: {
-    chainId: 128123,
-    name: 'Etherlink Testnet',
-    rpcUrl: 'https://node.ghostnet.teztnets.xyz',
-  },
+  // App configuration
+  appName: "Touch Grass",
+  projectName: "Touch Grass",
 
-  // Sequence project settings (you'll get these from Sequence dashboard)
-  projectAccessKey: process.env.NEXT_PUBLIC_SEQUENCE_PROJECT_ACCESS_KEY || '',
+  // UI configuration
+  position: "center" as const,
+  defaultTheme: "dark" as const,
+  enableConfirmationModal: true,
 
-  // Wallet creation options
-  walletOptions: {
-    // Allow users to create wallets without email
-    skipEmailVerification: true,
+  // Network configuration
+  defaultChainId: 128123, // Etherlink Testnet
+  chainIds: [1, 10, 40, 41, 56, 97, 100, 137, 1101, 1284, 1287, 1328, 1329, 1868, 1946, 1993, 5031, 6283, 7668, 7672, 8333, 8453, 10143, 11690, 19011, 33111, 33139, 40875, 42161, 42170, 42793, 43113, 43114, 50312, 62850, 80002, 81457, 84532, 128123, 421614, 660279, 11155111, 11155420, 21000000, 37084624, 168587773, 1482601649, 37714555429],
 
-    // Default wallet settings
-    defaultWallet: {
-      name: 'Touch Grass Wallet',
-      description: 'Your wallet for organizing meetups and minting memories',
-    },
+  // Wallet providers
+  google: true,
+  apple: false,
+  coinbase: false,
+  metaMask: true,
+
+  // Wagmi configuration
+  wagmiConfig: {
+    multiInjectedProviderDiscovery: true,
   },
 };
 
-// Sequence wallet creation URL
-export const SEQUENCE_WALLET_URL = 'https://sequence.app';
-
-// Network configuration for Sequence
-export const SEQUENCE_NETWORK_CONFIG = {
-  chainId: '0x1f47b', // 128123 in hex
-  chainName: 'Etherlink Testnet',
-  nativeCurrency: {
-    name: 'Tezos',
-    symbol: 'XTZ',
-    decimals: 18,
-  },
-  rpcUrls: ['https://node.ghostnet.teztnets.xyz'],
-  blockExplorerUrls: ['https://testnet-explorer.etherlink.com'],
-};
+// Export the main config
+export default SEQUENCE_CONFIG;
