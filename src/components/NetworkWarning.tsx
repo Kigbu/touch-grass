@@ -1,97 +1,161 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { useNetworkCheck } from '@/core/hooks/useNetworkCheck';
-import { METAMASK_NETWORK_CONFIG } from '@/core/config/contracts';
+import { sessionUtils } from '@/core/utils/session';
+import { CURRENT_NETWORK, METAMASK_NETWORK_CONFIG } from '@/core/config/contracts';
 
 export default function NetworkWarning() {
-  const {
-    isWrongNetwork,
-    isSwitching,
-    networkName,
-    switchToEtherlink,
-    addEtherlinkToWallet,
-    showNetworkModal,
-    setShowNetworkModal,
-  } = useNetworkCheck();
-
+  const { isCorrectNetwork, networkName, addEtherlinkToWallet } = useNetworkCheck();
   const [isMounted, setIsMounted] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [isWarningDismissed, setIsWarningDismissed] = useState(false);
+  const [sessionNetwork, setSessionNetwork] = useState<{ chainId?: number; network?: string; isCorrect: boolean }>({
+    chainId: undefined,
+    network: undefined,
+    isCorrect: false
+  });
 
   // Prevent hydration mismatch
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  // Don't render until client-side
-  if (!isMounted) return null;
+  // Check session network
+  useEffect(() => {
+    if (isMounted) {
+      const network = sessionUtils.getCurrentNetwork();
+      setSessionNetwork(network);
+    }
+  }, [isMounted]);
 
-  if (!isWrongNetwork) return null;
+  // Show warning if not on correct network AND not dismissed
+  const shouldShowWarning = isMounted &&
+    !isWarningDismissed &&
+    (!isCorrectNetwork || !sessionNetwork.isCorrect) &&
+    sessionNetwork.chainId !== 128123; // Don't show if already on Etherlink Testnet
+
+  if (!isMounted || !shouldShowWarning) {
+    return null;
+  }
+
+  const handleSwitchNetwork = async () => {
+    try {
+      await addEtherlinkToWallet();
+      toast.success('Network switched successfully!');
+      setShowModal(false);
+    } catch (error) {
+      console.error('Error switching network:', error);
+      toast.error('Failed to switch network. Please try manually.');
+    }
+  };
+
+  const currentNetwork = sessionNetwork.network || 'Unknown Network';
+  const currentChainId = sessionNetwork.chainId || 'Unknown';
 
   return (
     <>
-      {/* Network Warning Banner */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-yellow-500 text-black p-3 text-center">
-        <div className="flex items-center justify-center gap-2">
-          <span className="text-lg">⚠️</span>
-          <span className="font-medium">
-            You're not connected to {networkName}. Please switch networks to use Touch Grass.
-          </span>
-          <button
-            onClick={switchToEtherlink}
-            disabled={isSwitching}
-            className="ml-4 px-4 py-1 bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
-          >
-            {isSwitching ? 'Switching...' : 'Switch Network'}
-          </button>
-          <button
-            onClick={() => setShowNetworkModal(true)}
-            className="ml-2 px-4 py-1 bg-gray-800 text-white rounded-lg hover:bg-gray-700 text-sm font-medium"
-          >
-            Add Network
-          </button>
+      {/* Warning Banner */}
+      <div className="fixed top-0 left-0 right-0 bg-yellow-500 text-black px-4 py-2 z-50">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">⚠️</span>
+            <span className="font-medium">
+              You're connected to {currentNetwork} (Chain ID: {currentChainId}).
+              Please switch to {networkName} for the best experience.
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowModal(true)}
+              className="bg-yellow-600 text-white px-4 py-1 rounded hover:bg-yellow-700 transition-colors text-sm font-medium"
+            >
+              Switch Network
+            </button>
+            <button
+              onClick={() => setIsWarningDismissed(true)}
+              className="text-black hover:text-gray-800 transition-colors p-1"
+              title="Dismiss warning"
+            >
+              ✕
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Network Modal */}
-      {showNetworkModal && (
+      {/* Network Switch Modal */}
+      {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h3 className="text-lg font-bold mb-4">Add Etherlink to Your Wallet</h3>
-            <p className="text-gray-600 mb-4">
-              Your wallet doesn't have the Etherlink network configured. Add it manually:
-            </p>
-
-            <div className="bg-gray-100 p-3 rounded mb-4 text-sm">
-              <div><strong>Network Name:</strong> {METAMASK_NETWORK_CONFIG.chainName}</div>
-              <div><strong>RPC URL:</strong> {METAMASK_NETWORK_CONFIG.rpcUrls[0]}</div>
-              <div><strong>Chain ID:</strong> {parseInt(METAMASK_NETWORK_CONFIG.chainId, 16)} (Hex: {METAMASK_NETWORK_CONFIG.chainId})</div>
-              <div><strong>Currency Symbol:</strong> {METAMASK_NETWORK_CONFIG.nativeCurrency.symbol}</div>
-              <div><strong>Block Explorer:</strong> {METAMASK_NETWORK_CONFIG.blockExplorerUrls[0]}</div>
+            <div className="text-center mb-6">
+              <div className="text-4xl mb-2">🌐</div>
+              <h3 className="text-xl font-bold mb-2">Switch to {networkName}</h3>
+              <p className="text-gray-600">
+                You're currently on {currentNetwork}. Switch to {networkName} to use Touch Grass features.
+              </p>
             </div>
 
-            <div className="flex gap-2">
-              <button
-                onClick={addEtherlinkToWallet}
-                className="flex-1 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 font-medium"
-              >
-                Add Automatically
-              </button>
-              <button
-                onClick={() => setShowNetworkModal(false)}
-                className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 font-medium"
-              >
-                Close
-              </button>
-            </div>
+            <div className="space-y-4">
+              {/* Network Info */}
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-blue-800 mb-2">About {networkName}</h4>
+                <div className="text-blue-700 text-sm space-y-1">
+                  <div>• Fast: Sub-second confirmation times (~500ms)</div>
+                  <div>• Fair: Permissionless and censorship-resistant</div>
+                  <div>• Nearly Free: ~$0.001 per transaction</div>
+                  <div>• EVM Compatible: Works with Ethereum tools</div>
+                </div>
+              </div>
 
-            <div className="mt-4 text-xs text-gray-500">
-              <p><strong>Manual Steps:</strong></p>
-              <ol className="list-decimal list-inside mt-1 space-y-1">
-                <li>Open MetaMask settings</li>
-                <li>Go to "Networks" → "Add Network"</li>
-                <li>Enter the details above</li>
-                <li>Save and switch to Etherlink Testnet</li>
-              </ol>
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={handleSwitchNetwork}
+                  className="flex-1 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors font-medium"
+                >
+                  Switch to {networkName}
+                </button>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors font-medium"
+                >
+                  Cancel
+                </button>
+              </div>
+
+              {/* Manual Instructions */}
+              <div className="text-center">
+                <button
+                  onClick={() => {
+                    const networkConfig = {
+                      chainId: `0x${CURRENT_NETWORK.chainId.toString(16)}`,
+                      chainName: CURRENT_NETWORK.name,
+                      nativeCurrency: CURRENT_NETWORK.nativeCurrency,
+                      rpcUrls: [CURRENT_NETWORK.rpcUrls.default.http[0]],
+                      blockExplorerUrls: [CURRENT_NETWORK.blockExplorers.default.url]
+                    };
+
+                    if (typeof window.ethereum !== 'undefined') {
+                      window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [networkConfig]
+                      }).then(() => {
+                        toast.success('Network added successfully!');
+                        setShowModal(false);
+                      }).catch((error: any) => {
+                        console.error('Error adding network:', error);
+                        toast.error('Failed to add network manually');
+                      });
+                    } else {
+                      toast.error('No wallet detected');
+                    }
+                  }}
+                  className="text-blue-500 hover:text-blue-700 text-sm underline"
+                >
+                  Add {networkName} manually
+                </button>
+              </div>
             </div>
           </div>
         </div>

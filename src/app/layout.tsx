@@ -7,9 +7,13 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import NetworkWarning from "@/components/NetworkWarning";
 
 import "react-toastify/dist/ReactToastify.css";
+import "@rainbow-me/rainbowkit/styles.css";
 import { ToastContainer } from "react-toastify";
 import { PrimeReactProvider } from "primereact/api";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
+
+// Import console filter to suppress external library warnings
+import "@/core/utils/consoleFilter";
 
 export default function RootLayout({
   children,
@@ -45,7 +49,7 @@ export default function RootLayout({
               pauseOnHover
               theme="light"
             />
-            <Header />
+
             {children}
           </PrimeReactProvider>
         </Web3Provider>

@@ -3,17 +3,27 @@
 import React, { useState, useEffect } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
-import SignIn from '../Dialogs/SignIn';
+import { sessionUtils } from '@/core/utils/session';
 
 export default function Header() {
   const { isConnected, address } = useAccount();
-  const [isSignInDialogOpen, setIsSignInDialogOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [sessionAddress, setSessionAddress] = useState<string | null>(null);
 
   // Prevent hydration mismatch by only rendering after mount
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  // Check for session data
+  useEffect(() => {
+    if (isMounted) {
+      const session = sessionUtils.getSession();
+      if (session?.address) {
+        setSessionAddress(session.address);
+      }
+    }
+  }, [isMounted]);
 
   // Don't render wallet state until client-side
   if (!isMounted) {
@@ -35,15 +45,10 @@ export default function Header() {
             </div>
           </div>
 
-          <div onClick={() => setIsSignInDialogOpen(true)} className="w-full px-4 py-5 cursor-pointer rounded-[10px] outline outline-offset-[-1px] outline-green-500 inline-flex justify-center items-center gap-2.5">
-            <div className="text-center justify-start text-white text-2xl font-medium font-inter leading-tight">Sign Up</div>
+          <div className="w-full px-4 py-5 rounded-[10px] outline outline-offset-[-1px] outline-green-500 inline-flex justify-center items-center gap-2.5">
+            <div className="text-center justify-start text-white text-2xl font-medium font-inter leading-tight">Loading...</div>
           </div>
         </div>
-
-        <SignIn
-          visible={isSignInDialogOpen}
-          hideDialog={() => setIsSignInDialogOpen(false)}
-        />
       </div>
     );
   }
@@ -66,24 +71,19 @@ export default function Header() {
           </div>
         </div>
 
-        {isConnected ? (
+        {(isConnected || sessionAddress) ? (
           <div className="flex items-center gap-2">
             <span className="text-white text-sm font-inter">
-              {address?.slice(0, 6)}...{address?.slice(-4)}
+              {(address || sessionAddress)?.slice(0, 6)}...{(address || sessionAddress)?.slice(-4)}
             </span>
             <ConnectButton />
           </div>
         ) : (
-          <div onClick={() => setIsSignInDialogOpen(true)} className="w-full px-4 py-5 cursor-pointer rounded-[10px] outline outline-offset-[-1px] outline-green-500 inline-flex justify-center items-center gap-2.5">
-            <div className="text-center justify-start text-white text-2xl font-medium font-inter leading-tight">Sign Up</div>
+          <div className="w-full px-4 py-5 rounded-[10px] outline outline-offset-[-1px] outline-green-500 inline-flex justify-center items-center gap-2.5">
+            <div className="text-center justify-start text-white text-2xl font-medium font-inter leading-tight">Not Connected</div>
           </div>
         )}
       </div>
-
-      <SignIn
-        visible={isSignInDialogOpen}
-        hideDialog={() => setIsSignInDialogOpen(false)}
-      />
     </div>
   );
 }
