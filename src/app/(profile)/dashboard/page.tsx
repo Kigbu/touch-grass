@@ -18,7 +18,7 @@ export default function DashbaordPage() {
   const [sessionAddress, setSessionAddress] = useState<string | null>(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
-  const { control, handleSubmit, setValue, watch, reset } = useForm({
+  const { control } = useForm({
     mode: 'onChange',
     defaultValues: {
 
@@ -133,7 +133,7 @@ export default function DashbaordPage() {
               </div>
               <div className="self-stretch p-2.5 inline-flex justify-center items-center gap-2.5">
                 <div className="text-center justify-start text-white text-2xl md:text-3xl font-normal font-inria-sans leading-tight">
-                  Enough screen time. Let's log out together!.
+                  Enough screen time. Let&apos;s log out together!.
                 </div>
               </div>
             </div>

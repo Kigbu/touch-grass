@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useNetworkCheck } from '@/core/hooks/useNetworkCheck';
 import { sessionUtils } from '@/core/utils/session';
-import { CURRENT_NETWORK, METAMASK_NETWORK_CONFIG } from '@/core/config/contracts';
+import { CURRENT_NETWORK } from '@/core/config/contracts';
 
 export default function NetworkWarning() {
   const { isCorrectNetwork, networkName, addEtherlinkToWallet } = useNetworkCheck();
@@ -62,7 +62,7 @@ export default function NetworkWarning() {
           <div className="flex items-center gap-2">
             <span className="text-lg">⚠️</span>
             <span className="font-medium">
-              You're connected to {currentNetwork} (Chain ID: {currentChainId}).
+              You&apos;re connected to {currentNetwork} (Chain ID: {currentChainId}).
               Please switch to {networkName} for the best experience.
             </span>
           </div>
@@ -92,7 +92,7 @@ export default function NetworkWarning() {
               <div className="text-4xl mb-2">🌐</div>
               <h3 className="text-xl font-bold mb-2">Switch to {networkName}</h3>
               <p className="text-gray-600">
-                You're currently on {currentNetwork}. Switch to {networkName} to use Touch Grass features.
+                You&apos;re currently on {currentNetwork}. Switch to {networkName} to use Touch Grass features.
               </p>
             </div>
 

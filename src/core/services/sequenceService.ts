@@ -51,7 +51,7 @@ export class SequenceService {
 
       const mockWallet: SequenceWallet = {
         address: `0x${Math.random().toString(16).substr(2, 40)}`,
-        chainId: SEQUENCE_CONFIG.defaultNetwork.chainId,
+        chainId: SEQUENCE_CONFIG.defaultChainId,
         isDeployed: true,
       };
 
@@ -83,7 +83,7 @@ export class SequenceService {
 
       const mockWallet: SequenceWallet = {
         address: `0x${Math.random().toString(16).substr(2, 40)}`,
-        chainId: SEQUENCE_CONFIG.defaultNetwork.chainId,
+        chainId: SEQUENCE_CONFIG.defaultChainId,
         isDeployed: true,
       };
 

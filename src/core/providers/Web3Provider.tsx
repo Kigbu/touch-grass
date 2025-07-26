@@ -8,11 +8,21 @@ import { ReactNode } from 'react';
 import SEQUENCE_CONFIG from '@/core/config/sequence';
 import { CURRENT_NETWORK } from '@/core/config/contracts';
 
+// Create Wagmi chain from our network config
+const wagmiChain = {
+  id: CURRENT_NETWORK.chainId,
+  name: CURRENT_NETWORK.name,
+  nativeCurrency: CURRENT_NETWORK.nativeCurrency,
+  rpcUrls: CURRENT_NETWORK.rpcUrls,
+  blockExplorers: CURRENT_NETWORK.blockExplorers,
+  testnet: true
+};
+
 // Create Wagmi config for RainbowKit
 const wagmiConfig = createWagmiConfig({
-  chains: [CURRENT_NETWORK],
+  chains: [wagmiChain],
   transports: {
-    [CURRENT_NETWORK.id]: http(),
+    [wagmiChain.id]: http(),
   },
 });
 

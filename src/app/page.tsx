@@ -3,17 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import { useNetworkCheck } from '@/core/hooks/useNetworkCheck';
 import { CURRENT_NETWORK } from '@/core/config/contracts';
-import { CustomConnectButton } from '@/components/CustomConnectButton';
 import { useOpenConnectModal, useWallets } from '@0xsequence/connect';
 import { sessionUtils, type WalletSession } from '@/core/utils/session';
 
 export default function Home() {
   const router = useRouter();
-  const { isCorrectNetwork, networkName } = useNetworkCheck();
   const { setOpenConnectModal } = useOpenConnectModal();
-  const { wallets, setActiveWallet } = useWallets();
+  const { wallets } = useWallets();
 
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
@@ -50,7 +47,7 @@ export default function Home() {
           isEmbedded: activeWallet.isEmbedded,
           signInMethod: activeWallet.signInMethod,
           connectedAt: new Date().toISOString(),
-          network: networkName,
+          network: 'Etherlink Testnet',
           chainId: CURRENT_NETWORK.chainId
         };
 
@@ -64,7 +61,7 @@ export default function Home() {
         router.push('/dashboard');
       }
     }
-  }, [isMounted, wallets, router, networkName]);
+  }, [isMounted, wallets, router]);
 
   const handleSequenceConnect = async () => {
     try {
@@ -105,7 +102,7 @@ export default function Home() {
         {/* Etherlink Network Info */}
         <div className="mb-6 p-4 bg-blue-50 rounded-lg text-center">
           <div className="text-blue-800 text-sm font-inter">
-            <strong>Built on {networkName}</strong>
+            <strong>Built on Etherlink Testnet</strong>
             <br />
             Fast, fair, and nearly free transactions
           </div>

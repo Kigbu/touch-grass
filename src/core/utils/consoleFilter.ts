@@ -5,7 +5,7 @@ if (typeof window !== 'undefined') {
   const originalConsoleWarn = console.warn;
 
   // Filter out specific warnings we want to suppress
-  console.error = (...args: any[]) => {
+  console.error = (...args: unknown[]) => {
     const message = args.join(' ');
 
     // Suppress Radix UI accessibility warnings from Sequence Connect
@@ -18,7 +18,7 @@ if (typeof window !== 'undefined') {
     originalConsoleError.apply(console, args);
   };
 
-  console.warn = (...args: any[]) => {
+  console.warn = (...args: unknown[]) => {
     const message = args.join(' ');
 
     // Suppress Radix UI accessibility warnings from Sequence Connect
