@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
 import { sessionUtils } from '@/core/utils/session';
+import SessionAwareConnectButton from '@/components/SessionAwareConnectButton';
 
 export default function Header() {
   const { isConnected, address } = useAccount();
@@ -73,10 +73,7 @@ export default function Header() {
 
         {(isConnected || sessionAddress) ? (
           <div className="flex items-center gap-2">
-            <span className="text-white text-sm font-inter">
-              {(address || sessionAddress)?.slice(0, 6)}...{(address || sessionAddress)?.slice(-4)}
-            </span>
-            <ConnectButton />
+            <SessionAwareConnectButton />
           </div>
         ) : (
           <div className="w-full px-4 py-5 rounded-[10px] outline outline-offset-[-1px] outline-green-500 inline-flex justify-center items-center gap-2.5">

@@ -7,8 +7,9 @@ import { useForm } from 'react-hook-form';
 import { useAccount, useDisconnect } from 'wagmi';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { sessionUtils } from '@/core/utils/session';
+import SessionAwareConnectButton from '@/components/SessionAwareConnectButton';
+import { useWalletRestoration } from '@/core/hooks/useWalletRestoration';
 
 export default function DashbaordPage() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export default function DashbaordPage() {
   const [isMounted, setIsMounted] = useState(false);
   const [sessionAddress, setSessionAddress] = useState<string | null>(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const { isRestoring } = useWalletRestoration();
 
   const { control } = useForm({
     mode: 'onChange',
@@ -70,13 +72,15 @@ export default function DashbaordPage() {
     );
   }
 
-  // Show loading if checking authentication
-  if (isCheckingAuth) {
+  // Show loading if checking authentication or restoring wallet
+  if (isCheckingAuth || isRestoring) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Checking authentication...</p>
+          <p className="mt-4 text-gray-600">
+            {isRestoring ? "Restoring wallet connection..." : "Checking authentication..."}
+          </p>
         </div>
       </div>
     );
@@ -107,15 +111,7 @@ export default function DashbaordPage() {
               Connected: {walletAddress?.slice(0, 6)}...{walletAddress?.slice(-4)}
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <ConnectButton />
-            <button
-              onClick={handleDisconnect}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-inter text-sm"
-            >
-              Disconnect
-            </button>
-          </div>
+          <SessionAwareConnectButton showDisconnect={true} />
         </div>
 
         <div className="w-full h-max relative overflow-hidden pt-6 md:pt-[74px]">
