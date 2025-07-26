@@ -43,9 +43,7 @@ const sequenceConfig = createConfig('waas', {
   waasConfigKey: SEQUENCE_CONFIG.waasConfigKey,
   google: false,
   apple: false,
-  walletConnect: {
-    projectId: SEQUENCE_CONFIG.walletConnectProjectId
-  },
+  walletConnect: false,
   coinbase: false,
   metaMask: true,
   wagmiConfig: SEQUENCE_CONFIG.wagmiConfig,
